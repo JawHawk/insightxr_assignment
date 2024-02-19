@@ -9,7 +9,7 @@ const scene = new THREE.Scene();
 
 const loadingManager = new THREE.LoadingManager();
 
-loadingManager.onProgress = function (url, loaded, total) {
+loadingManager.onStart = function (url, loaded, total) {
   document.querySelector("#loadingDiv").style.display = "block";
 };
 
