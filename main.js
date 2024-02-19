@@ -7,6 +7,15 @@ const canvas = document.querySelector("#c");
 
 const scene = new THREE.Scene();
 
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onProgress = function (url, loaded, total) {
+  document.querySelector("#loadingDiv").style.display = "block";
+};
+
+loadingManager.onLoad = function () {
+  document.querySelector("#loadingDiv").style.display = "none";
+};
 let radius = mobile ? 0.8 : 1;
 
 // const ambientLight = new THREE.AmbientLight(0x4040ff, 1);
@@ -70,16 +79,16 @@ const material = new THREE.ShaderMaterial({
 // const cube = new THREE.Mesh(geometry, material);
 // scene.add(cube);
 
-const gltfLoader = new GLTFLoader();
+const gltfLoader = new GLTFLoader(loadingManager);
 
 gltfLoader.load("/porsche.glb", function (gltf) {
   const model = gltf.scene;
-  console.log(model);
+  // console.log(model);
   model.traverse(function (child) {
     if (child instanceof THREE.Mesh) {
       // ...and we replace the material with our custom one
       // child.material = customMaterial;
-      console.log(child);
+      // console.log(child);
       child.material = material;
       // scene.add(child);
     }
