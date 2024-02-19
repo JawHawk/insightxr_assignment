@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script type="module" src="/main.js"></script>
+    <script type="x-shader/x-vertex" id="vertexShader">
+      varying vec3 vposition;
+      void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vposition = (modelMatrix * vec4(position, 1.0)).xyz;
+      }
+  </script>
+
+  <script type="x-shader/x-fragment" id="fragmentShader">
+      varying vec3 vposition;
+      void main() {
+          vec3 vColor = vec3(  2.0*vposition.y + 0.75, 0.0, 1.0 - vposition.y);
+          gl_FragColor = vec4(vColor, 1.0); 
+      }
+  </script>
+  </body>
+</html>
