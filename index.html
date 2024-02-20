@@ -9,7 +9,12 @@
   </head>
   <body>
     <h1 id="loadingDiv" style="display: none;">Loading car assets...</h1>
-    <canvas id="c"></canvas>
+    <div class="group">
+      <input width="100px" height="100px" type="checkbox" id="materialSwitch" name="materialSwitch" checked="false">
+    <label for="materialSwitch"> Show Heatmap</label>
+    </div>
+    <br>
+    <canvas id="c" style="position: fixed;"></canvas>
     <script type="module" src="/main.js"></script>
     <script type="x-shader/x-vertex" id="vertexShader">
       varying vec3 vposition;

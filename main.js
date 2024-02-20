@@ -1,6 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment";
+
+let checkbox = document.getElementById("materialSwitch");
 
 const mobile = window.matchMedia("(max-width: 480px)").matches;
 const canvas = document.querySelector("#c");
@@ -17,13 +20,6 @@ loadingManager.onLoad = function () {
   document.querySelector("#loadingDiv").style.display = "none";
 };
 let radius = mobile ? 0.8 : 1;
-
-// const ambientLight = new THREE.AmbientLight(0x4040ff, 1);
-// ambientLight.position.set(2, 2, 2); // soft white light
-// scene.add(ambientLight);
-
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-scene.add(directionalLight);
 
 const sizes = {
   width: window.innerWidth,
@@ -81,16 +77,16 @@ const material = new THREE.ShaderMaterial({
 
 const gltfLoader = new GLTFLoader(loadingManager);
 
+let objectmaterials = {};
+let model;
 gltfLoader.load("/porsche.glb", function (gltf) {
-  const model = gltf.scene;
-  // console.log(model);
+  model = gltf.scene;
   model.traverse(function (child) {
     if (child instanceof THREE.Mesh) {
-      // ...and we replace the material with our custom one
-      // child.material = customMaterial;
-      // console.log(child);
-      child.material = material;
-      // scene.add(child);
+      objectmaterials[child.uuid] = child.material;
+      if (checkbox.checked) {
+        child.material = material;
+      }
     }
   });
   scene.add(model);
@@ -101,7 +97,13 @@ const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   alpha: true,
 });
+const environment = new RoomEnvironment();
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+scene.environment = pmremGenerator.fromScene(environment).texture;
+
 renderer.setSize(sizes.width, sizes.height);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
 
 /*
 =*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=
@@ -113,6 +115,28 @@ controls.enableDamping = true;
 
 const clock = new THREE.Clock();
 let previousTime = 0;
+
+function changeObjectMaterials(checked) {
+  if (model) {
+    if (checked) {
+      model.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = material;
+        }
+      });
+    } else {
+      model.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          console.log(objectmaterials);
+          child.material = objectmaterials[child.uuid];
+        }
+      });
+    }
+  }
+}
+checkbox.addEventListener("change", () =>
+  changeObjectMaterials(checkbox.checked)
+);
 
 const animate = () => {
   const elapsedTime = clock.getElapsedTime();

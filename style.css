@@ -1,3 +1,19 @@
 body {
   margin: 0;
 }
+
+#materialSwitch {
+  height: 25px;
+  width: 25px;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: fixed;
+  right : 100px;
+  top: 50px;
+  z-index: 1;
+  font-size: 1.5rem
+}
