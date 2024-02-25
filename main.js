@@ -96,6 +96,7 @@ gltfLoader.load("/porsche.glb", function (gltf) {
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
   alpha: true,
+  antialias: true,
 });
 const environment = new RoomEnvironment();
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
